@@ -35,6 +35,7 @@ body {
 		   animation: spin 6s linear infinite; 
 					 opacity: 50%;
 					 cursor: url(https://i.imgur.com/xVVs6bP.png), auto;
+			z-index: -2;
 		  }  
 		  @-moz-keyframes spin 
 		  {
@@ -153,7 +154,7 @@ body {
 	   -moz-box-shadow: 4px 6px 30px 0px rgba(0,0,0,0.6);
 	   box-shadow: 4px 6px 30px 0px rgba(0,0,0,0.6);
 	   border-radius: 50%;
-	   z-index: 2;
+	   z-index: -1;
    }
    .copaserv .track-info-serv {
 	   width: 200px;
