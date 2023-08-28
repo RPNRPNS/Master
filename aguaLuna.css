@@ -8,12 +8,12 @@ body {
    }
    
 .M{
- background: url('https://i.imgur.com/LJqHEUz.png');
+ background: url('https://i.imgur.com/4ZhVBNa.png');
  background-repeat: no-repeat;
 }
 
    .copaserv {
-	cursor: url(https://i.imgur.com/xVVs6bP.png), auto;
+	cursor: url(https://i.imgur.com/4ZhVBNa.png), auto;
 	 background:transparent;
 	 background-repeat: no-repeat;
 	 width: 500px;
@@ -25,7 +25,7 @@ body {
 	
 					width: 400px;
 					height: 400px;  
-		   background: url(https://i.imgur.com/hDvY9M0.png) center no-repeat; 
+		   background: transparent center no-repeat; 
 		   background-size: cover; 
 		   position: absolute;
 		   overflow: hidden; 
@@ -240,7 +240,7 @@ z-index: calc(14);
    }
    
    .copaserv .play-btn {
-	   background: url(https://i.imgur.com/BczxELx.png);
+	   background: transparent;
 	   background-repeat: no-repeat;
 	   background-position: center center;	
 	   background-size: 64px 64px;
@@ -250,7 +250,7 @@ z-index: calc(14);
 	   cursor: url(https://i.imgur.com/Gsk7sZs.png), auto;
    }
    .copaserv .stop-btn {
-	   background: url(https://i.imgur.com/mqeIoCi.png);
+	   background: transparent;
 	   background-repeat: no-repeat;
 	   background-position: center center;	
 	   background-size: 64px 64px;
@@ -261,7 +261,7 @@ z-index: calc(14);
    }
 
   .copaserv .icons-left {
-	content: url(https://i.imgur.com/wgpWVw4.png);
+	content: transparent;
 	width: 44px;
 	height: 44px;
 	font-size: 18px;
