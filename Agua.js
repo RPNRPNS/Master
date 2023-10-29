@@ -65,7 +65,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
         var settings = $.extend({
             // Default Settings
             URL: "https://s01.digitalserver.org:8034",
-			version: "1",
+			version: "2",
             stream_id: 1,
 			mount_point: "", 
 			type: "/;type=mp3",
@@ -541,7 +541,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 })(jQuery);
     $("#stream1").icast({
 	    URL: "https://s01.digitalserver.org:8034",
-		version: "1",
+		version: "2",
        })
        
 	
