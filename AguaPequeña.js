@@ -64,7 +64,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 	$.fn.icast = function (options) {
         var settings = $.extend({
             // Default Settings
-            URL: "https://s01.digitalserver.org:8034",
+            URL: "https://s01.digitalserver.org:8058",
 			version: "2",
             stream_id: 1,
 			mount_point: "", 
@@ -540,7 +540,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 
 })(jQuery);
     $("#stream1").icast({
-	    URL: "https://s01.digitalserver.org:8034",
+	    URL: "https://s01.digitalserver.org:8058",
 		version: "2",
        })
        
