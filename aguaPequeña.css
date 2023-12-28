@@ -648,7 +648,7 @@ z-index: calc(14);
 	   font-size: 12px;
 	   left: 268px;
 	   top: 248px;
-	   color: #FFFFFF;
+	   color: #000000;
 	   width: 223px;
 	   height: 19px;
 	   z-index: 16;
@@ -661,7 +661,7 @@ z-index: calc(14);
 	   top: 40px;
 	   left: 91px;
 	   width: 43px;
-	   color: #FFFFFF;
+	   color: #000000;
 	   font-family: 'Chela One', cursive;
 	   font-size: 12px;
    }
