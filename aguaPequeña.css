@@ -470,7 +470,7 @@ z-index: calc(14);
    .copaserv .history-songtitle {
 	   max-width: 600px;
 	   font-size: 19px;	
-	   color: rgba(255,255,255,1);
+	   color: #000000);
 	   text-overflow: ellipsis;
 	   overflow: hidden;
 	   white-space: nowrap;
@@ -478,7 +478,7 @@ z-index: calc(14);
    .copaserv .history-artist-name {
 	   max-width: 600px;
 	   font-size: 16px;
-	   color: rgba(255,255,255,.7);
+	   color: #000000;
 	   text-overflow: ellipsis;
 	   overflow: hidden;
 	   white-space: nowrap;
