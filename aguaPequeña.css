@@ -212,7 +212,7 @@ body {
 	top: 24px;
 	width: 150px;
 	z-index: calc(12);
-	   color: #FFFFFF;
+	   color: #000000;
    }
    .copaserv .listeners {
 	   max-width: 100px;
