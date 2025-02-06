@@ -64,7 +64,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 	$.fn.icast = function (options) {
         var settings = $.extend({
             // Default Settings
-            URL: "https://s01.digitalserver.org:7018",
+            URL: "https://technoplayerserver.net:8210",
 			version: "2",
             stream_id: 1,
 			mount_point: "", 
