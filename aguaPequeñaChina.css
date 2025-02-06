@@ -208,10 +208,11 @@ body {
    
    #animation{
 	position: absolute;
-	left: 130px;
-	top: 24px;
-	width: 150px;
+	left: 113px;
+	top: 38px;
+	width: 132px;
 	z-index: calc(12);
+	color: #fff;
    }
    .copaserv .listeners {
 	   max-width: 100px;
@@ -657,10 +658,10 @@ z-index: calc(14);
    
    #Clock {
 	   position: absolute;
-	   top: 14px;
-	   left: 91px;
+	   top: 20px;
+	   left: 65px;
 	   width: 43px;
-	   color: #FFFFFF;
+	   color: #fff;
 	   font-family: 'Chela One', cursive;
 	   font-size: 12px;
    }
@@ -748,7 +749,7 @@ z-index: calc(14);
    
    .logo2 h2 {
     position: absolute;
-    top: 215px;
-    left: 176px;
+	top: 197px;
+	left: 183px;
    }
   
