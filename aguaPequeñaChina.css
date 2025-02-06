@@ -8,7 +8,7 @@ body {
    }
    
 .M{
- background: url('https://imgur.com/RIyRegl.png');
+ background: url('https://imgur.com/2qUasSA.png');
  height: 18.9rem; 
  width: 21.9rem; 
  z-index: calc(11);
@@ -208,8 +208,8 @@ body {
    
    #animation{
 	position: absolute;
-	left: 113px;
-	top: 38px;
+	left: 134px;
+	top: 25px;
 	width: 132px;
 	z-index: calc(12);
 	color: #fff;
@@ -749,7 +749,6 @@ z-index: calc(14);
    
    .logo2 h2 {
     position: absolute;
-	top: 197px;
-	left: 183px;
+	top: 211px;
+	left: 166px;
    }
-  
