@@ -540,7 +540,7 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 
 })(jQuery);
     $("#stream1").icast({
-	    URL: "https://s01.digitalserver.org:7018",
+	    URL: "https://radio.technoplayer2radioserver.org:8050",
 		version: "2",
        })
        
