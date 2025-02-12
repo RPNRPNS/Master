@@ -8,7 +8,7 @@ body {
    }
    
 .M{
- background: url('https://imgur.com/2qUasSA.png');
+ background: url('https://imgur.com/c6v4Ru9.png');
  height: 18.9rem; 
  width: 21.9rem; 
  z-index: calc(11);
@@ -277,15 +277,15 @@ z-index: calc(14);
 	cursor: url(https://i.imgur.com/Gsk7sZs.png), auto;
   }
   .copaserv .icons-right {
-	width: 24px;
-	height: 24px;
-	font-size: 24px;
-	color: rgba(112, 0, 112, 1);
-	position: absolute;
-	top: 250px;
-	left: 116px;
-	cursor: pointer;
-	z-index: calc(12);
+    width: 24px;
+    height: 24px;
+    font-size: 24px;
+    color: rgba(112, 0, 112, 1);
+    position: absolute;
+    top: 267px;
+    left: 116px;
+    cursor: pointer;
+    z-index: calc(12);
   }
 	   .copaserv .icons-serverinfo:before {
 		content:url();
@@ -325,13 +325,12 @@ z-index: calc(14);
 	z-index: 12;
    }
    .copaserv input[type=range] {
-	   width: 100px;
-	   height: 6px;
-	   background: none;
-	   padding: 6px 0px 6px 0px;
-	   transform: rotate(0deg);
-	   transform-origin: bottom;
-	   cursor: pointer;
+    width: 90px;
+    height: 16px;
+    background: none;
+    margin-top: 17px;
+    padding: 6px 0px 6px 0px;
+    cursor: pointer;
    }
    .copaserv input[type=range]:focus {
 	   outline: none;
