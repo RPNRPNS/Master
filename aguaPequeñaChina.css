@@ -208,8 +208,8 @@ body {
    
    #animation{
 	position: absolute;
-	left: 134px;
-	top: 25px;
+left: 148px;
+  top: 27px;
 	width: 132px;
 	z-index: calc(12);
 	color: #fff;
@@ -657,8 +657,8 @@ width: 90px;
    
    #Clock {
 	   position: absolute;
-	   top: 20px;
-	   left: 65px;
+top: 37px;
+  left: 31px;
 	   width: 43px;
 	   color: #fff;
 	   font-family: 'Chela One', cursive;
@@ -748,6 +748,6 @@ width: 90px;
    
    .logo2 h2 {
     position: absolute;
-	top: 211px;
-	left: 166px;
+top: 212px;
+  left: 150px;
    }
