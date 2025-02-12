@@ -319,7 +319,7 @@ z-index: calc(14);
    }
    .copaserv .volume-slider {
 	position: absolute;
-	top: 248px;
+	top: 269px;
 	left: 150px;
 	display: auto;
 	z-index: 12;
@@ -328,7 +328,7 @@ z-index: calc(14);
 width: 90px;
   height: 16px;
   background: none;
-  margin-top: 18px;
+  margin-top: 0px;
   padding: 6px 0px 6px 0px;
   cursor: pointer;
    }
