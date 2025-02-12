@@ -282,8 +282,8 @@ z-index: calc(14);
     font-size: 24px;
     color: rgba(112, 0, 112, 1);
     position: absolute;
-    top: 267px;
-    left: 116px;
+top: 271px;
+  left: 140px;
     cursor: pointer;
     z-index: calc(12);
   }
@@ -319,8 +319,8 @@ z-index: calc(14);
    }
    .copaserv .volume-slider {
 	position: absolute;
-top: 267px;
-  left: 147px;
+top: 270px;
+left: 166px;
 	display: auto;
 	z-index: 12;
    }
