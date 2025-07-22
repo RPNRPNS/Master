@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Globo Terrestre Interactivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://rpnrpns.github.io/Master/Globo.css">
+</head>
+<body>
+    <div id="datario">Hora: --:--:-- - Fecha: --/--/---- - Visitantes: 1</div>
+    
+    <div id="copyright-area">
+        <span>© 2025</span>
+        <a href="https://xat.com/RADIOPERLANEGRA" target="_blank">
+            <img src="https://i.imgur.com/981Zxp6.png" alt="Logo" />
+        </a>
+    </div>
+
+    <div id="controls-container">
+        <div id="controls">
+            <button id="toggleRotation" class="control-btn">⏸️ Pausar Rotación</button>
+            <button id="toggleDarkMode" class="control-btn">🌙 Modo Oscuro</button>
+            <button id="toggleView" class="control-btn">🔄 Cambiar Vista</button>
+        </div>
+    </div>
+
+    <div id="globe-container"></div>
+    <div id="map-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://rpnrpns.github.io/Master/Globo.js"></script>
+</body>
+</html>
