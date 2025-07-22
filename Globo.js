@@ -3,14 +3,11 @@ let visitCount = localStorage.getItem('visitCount') ? parseInt(localStorage.getI
 visitCount++;
 localStorage.setItem('visitCount', visitCount.toString());
 let isRotating = true;
-let userMarker3D = null;
-let userLabel = null;
-let userMarker2D = null;
+let userMarkers = [];
 let lastDragTime = 0;
 let darkMode = false;
 let is3DView = true;
 let map = null;
-let mapMarker = null;
 let userLat = 0;
 let userLng = 0;
 let userLocationName = "";
@@ -172,68 +169,75 @@ function init2DMap() {
         }).addTo(map);
         
         if (userLat !== 0 && userLng !== 0) {
-            mapMarker = L.marker([userLat, userLng]).addTo(map)
+            L.marker([userLat, userLng], {icon: redIcon}).addTo(map)
                 .bindPopup(userLocationName);
             map.setView([userLat, userLng], 5);
         }
     } else {
         if (userLat !== 0 && userLng !== 0) {
-            if (mapMarker) {
-                mapMarker.setLatLng([userLat, userLng]);
-                mapMarker.setPopupContent(userLocationName);
-            } else {
-                mapMarker = L.marker([userLat, userLng]).addTo(map)
-                    .bindPopup(userLocationName);
-            }
             map.setView([userLat, userLng], 5);
         }
     }
 }
 
-function createUserMarker(lat, lng, labelText) {
-    // Eliminar marcadores anteriores si existen
-    if (userMarker3D) {
-        globe.remove(userMarker3D);
-        userMarker3D.geometry.dispose();
-        userMarker3D.material.dispose();
-    }
-    if (userLabel) {
-        document.getElementById('globe-container').removeChild(userLabel);
-    }
-    if (userMarker2D) {
-        document.getElementById('globe-container').removeChild(userMarker2D);
-    }
+// Iconos para Leaflet
+const redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
-    // Crear marcador 3D
+const blueIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+function createUserMarker(lat, lng, labelText, isCurrentUser = true) {
+    // Marcador 3D
     const markerGeometry = new THREE.SphereGeometry(0.02, 32, 32);
     const markerMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0xff0000,
+        color: isCurrentUser ? 0xff0000 : 0x0000ff,
         transparent: true,
         opacity: 0.9
     });
-    userMarker3D = new THREE.Mesh(markerGeometry, markerMaterial);
-    userMarker3D.position.copy(convertLatLngToVector3(lat, lng, 1.01));
-    globe.add(userMarker3D);
+    const marker3D = new THREE.Mesh(markerGeometry, markerMaterial);
+    marker3D.position.copy(convertLatLngToVector3(lat, lng, 1.01));
+    globe.add(marker3D);
 
-    // Guardar coordenadas
-    userLat = lat;
-    userLng = lng;
-    userLocationName = labelText;
+    // Etiqueta HTML
+    const label = document.createElement("div");
+    label.className = `label ${isCurrentUser ? 'green' : 'blue'}`;
+    label.textContent = labelText;
+    document.getElementById('globe-container').appendChild(label);
 
-    // Etiqueta
-    userLabel = document.createElement("div");
-    userLabel.className = "label green";
-    userLabel.textContent = labelText;
-    document.getElementById('globe-container').appendChild(userLabel);
+    // Marcador 2D (punto)
+    const marker2D = document.createElement("div");
+    marker2D.className = isCurrentUser ? "user-marker" : "other-user-marker";
+    document.getElementById('globe-container').appendChild(marker2D);
 
-    // Marcador 2D
-    userMarker2D = document.createElement("div");
-    userMarker2D.className = "user-marker";
-    document.getElementById('globe-container').appendChild(userMarker2D);
+    // Guardar referencia
+    userMarkers.push({
+        lat, lng, labelText,
+        marker3D, label, marker2D,
+        isCurrentUser
+    });
 
     // Actualizar mapa 2D si está visible
-    if (!is3DView) {
-        init2DMap();
+    if (!is3DView && map) {
+        if (isCurrentUser) {
+            L.marker([lat, lng], {icon: redIcon}).addTo(map)
+                .bindPopup(labelText);
+        } else {
+            L.marker([lat, lng], {icon: blueIcon}).addTo(map)
+                .bindPopup(labelText);
+        }
     }
 }
 
@@ -247,35 +251,33 @@ function convertLatLngToVector3(lat, lng, radius) {
     );
 }
 
-function update2DPositions() {
-    if (!userMarker3D || !userLabel || !userMarker2D) return;
-    
-    const vector = userMarker3D.getWorldPosition(new THREE.Vector3());
-    const projected = vector.project(camera);
-    
-    const x = (projected.x * 0.5 + 0.5) * renderer.domElement.width;
-    const y = (-projected.y * 0.5 + 0.5) * renderer.domElement.height;
-    
-    if (projected.z < 1) {
-        userLabel.style.display = "block";
-        userLabel.style.left = `${x}px`;
-        userLabel.style.top = `${y}px`;
+function updateMarkerPositions() {
+    userMarkers.forEach(marker => {
+        const vector = marker.marker3D.getWorldPosition(new THREE.Vector3());
+        const projected = vector.project(camera);
         
-        userMarker2D.style.display = "block";
-        userMarker2D.style.left = `${x}px`;
-        userMarker2D.style.top = `${y}px`;
-    } else {
-        userLabel.style.display = "none";
-        userMarker2D.style.display = "none";
-    }
+        const x = (projected.x * 0.5 + 0.5) * renderer.domElement.width;
+        const y = (-projected.y * 0.5 + 0.5) * renderer.domElement.height;
+        
+        if (projected.z < 1) {
+            marker.label.style.display = "block";
+            marker.label.style.left = `${x}px`;
+            marker.label.style.top = `${y}px`;
+            
+            marker.marker2D.style.display = "block";
+            marker.marker2D.style.left = `${x}px`;
+            marker.marker2D.style.top = `${y}px`;
+        } else {
+            marker.label.style.display = "none";
+            marker.marker2D.style.display = "none";
+        }
+    });
 }
 
 function fetchUserLocation() {
+    // Obtener ubicación del usuario actual
     fetch("https://ipapi.co/json/")
-        .then(res => {
-            if (!res.ok) throw new Error(`Error HTTP! estado: ${res.status}`);
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
             const normalizeText = (text) => {
                 return text ? text.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
@@ -291,13 +293,39 @@ function fetchUserLocation() {
             if (country) locationParts.push(country);
 
             userLocationName = locationParts.join(", ");
-            createUserMarker(data.latitude, data.longitude, userLocationName);
+            userLat = data.latitude;
+            userLng = data.longitude;
+
+            createUserMarker(userLat, userLng, userLocationName, true);
+            
+            // Simular otros usuarios con la API de OpenStreetMap Nominatim
+            fetchRandomLocations(5);
         })
         .catch(err => {
             console.error("Error obteniendo ubicación:", err);
-            createUserMarker(0, 0, "Ubicación no disponible");
-            if (userLabel) userLabel.classList.add('error');
+            createUserMarker(0, 0, "Ubicación no disponible", true);
         });
+}
+
+function fetchRandomLocations(count) {
+    const cities = ["Madrid", "Paris", "New York", "Tokyo", "Sydney", "Cairo", "Rio de Janeiro"];
+    
+    cities.slice(0, count).forEach(city => {
+        fetch(`https://nominatim.openstreetmap.org/search?city=${city}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const location = data[0];
+                    createUserMarker(
+                        parseFloat(location.lat),
+                        parseFloat(location.lon),
+                        city,
+                        false
+                    );
+                }
+            })
+            .catch(err => console.error(`Error obteniendo ${city}:`, err));
+    });
 }
 
 function updateDateTimeDisplay() {
@@ -314,7 +342,8 @@ function updateDateTimeDisplay() {
 }
 
 function updateVisitorCount() {
-    activeVisitors = visitCount;
+    // Usamos el contador local como base y sumamos los marcadores simulados
+    activeVisitors = visitCount + userMarkers.filter(m => !m.isCurrentUser).length;
     updateDateTimeDisplay();
 }
 
@@ -337,14 +366,14 @@ function animateGlobe() {
             }
         }
         
-        update2DPositions();
+        updateMarkerPositions();
         renderer.render(scene, camera);
     }
 }
 
 // Inicialización
 function init() {
-    window.addEventListener("resize", update2DPositions);
+    window.addEventListener("resize", updateMarkerPositions);
     fetchUserLocation();
     setInterval(updateDateTimeDisplay, 1000);
     setInterval(updateVisitorCount, 5000);
