@@ -45,6 +45,10 @@ body {
     color: #00ff00;
 }
 
+.label.blue {
+    color: #00a8ff;
+}
+
 .label.error {
     color: #ff5555;
     font-style: italic;
@@ -153,7 +157,6 @@ body.dark-mode {
 
 body.dark-mode .control-btn {
     background: rgba(30, 30, 30, 0.9);
-    transition: all 0.5s ease;
 }
 
 body.dark-mode .control-btn:hover {
@@ -162,11 +165,6 @@ body.dark-mode .control-btn:hover {
 
 body.dark-mode #map-container {
     filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(1.2);
-    transition: filter 0.5s ease;
-}
-
-.other-user-label {
-    color: #00a8ff !important;
 }
 
 .firebase-error {
