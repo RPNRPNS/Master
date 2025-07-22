@@ -1,17 +1,35 @@
+// Importaciones Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+import { getFirestore, doc, setDoc, collection, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics.js";
+
+// Configuración Firebase (tus credenciales)
+const firebaseConfig = {
+  apiKey: "AIzaSyBsBSSXjsK-EbdQGOsAycobtXNcMOAou9o",
+  authDomain: "globo-2527e.firebaseapp.com",
+  projectId: "globo-2527e",
+  storageBucket: "globo-2527e.firebasestorage.app",
+  messagingSenderId: "1042384350668",
+  appId: "1:1042384350668:web:6f78aca0b6799f53328169",
+  measurementId: "G-293KTDMDQ1"
+};
+
+// Inicialización Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const analytics = getAnalytics(app);
+
 // Variables globales
-let visitCount = localStorage.getItem('visitCount') ? parseInt(localStorage.getItem('visitCount')) : 0;
-visitCount++;
-localStorage.setItem('visitCount', visitCount.toString());
 let isRotating = true;
 let userMarkers = [];
-let lastDragTime = 0;
 let darkMode = false;
 let is3DView = true;
 let map = null;
 let userLat = 0;
 let userLng = 0;
 let userLocationName = "";
-let activeVisitors = visitCount;
+let activeVisitors = 1;
+const userId = "user_" + Math.random().toString(36).substring(2) + Date.now();
 
 // Escena Three.js
 const scene = new THREE.Scene();
@@ -97,7 +115,7 @@ renderer.domElement.addEventListener('mouseleave', () => {
     isRotating = Math.abs(rotationMomentum) > 0.0001;
 });
 
-// Zoom corregido (no invertido)
+// Zoom
 renderer.domElement.addEventListener('wheel', (e) => {
     e.preventDefault();
     targetZoom += e.deltaY * 0.01;
@@ -157,6 +175,25 @@ function toggleView() {
     }
 }
 
+// Iconos para Leaflet
+const redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const blueIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
 function init2DMap() {
     if (!map) {
         map = L.map('map-container', {
@@ -179,25 +216,6 @@ function init2DMap() {
         }
     }
 }
-
-// Iconos para Leaflet
-const redIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
-const blueIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
 
 function createUserMarker(lat, lng, labelText, isCurrentUser = true) {
     // Marcador 3D
@@ -274,58 +292,118 @@ function updateMarkerPositions() {
     });
 }
 
-function fetchUserLocation() {
-    // Obtener ubicación del usuario actual
-    fetch("https://ipapi.co/json/")
-        .then(res => res.json())
-        .then(data => {
-            const normalizeText = (text) => {
-                return text ? text.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
-            };
-
-            const city = normalizeText(data.city);
-            const region = normalizeText(data.region);
-            const country = normalizeText(data.country_name);
-
-            const locationParts = [];
-            if (city) locationParts.push(city);
-            if (region && region !== city) locationParts.push(region);
-            if (country) locationParts.push(country);
-
-            userLocationName = locationParts.join(", ");
-            userLat = data.latitude;
-            userLng = data.longitude;
-
-            createUserMarker(userLat, userLng, userLocationName, true);
-            
-            // Simular otros usuarios con la API de OpenStreetMap Nominatim
-            fetchRandomLocations(5);
-        })
-        .catch(err => {
-            console.error("Error obteniendo ubicación:", err);
-            createUserMarker(0, 0, "Ubicación no disponible", true);
-        });
+function showFirebaseError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'firebase-error';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 5000);
 }
 
-function fetchRandomLocations(count) {
-    const cities = ["Madrid", "Paris", "New York", "Tokyo", "Sydney", "Cairo", "Rio de Janeiro"];
+async function saveUserLocation(lat, lng, name) {
+    try {
+        await setDoc(doc(db, 'activeUsers', userId), {
+            lat,
+            lng,
+            name,
+            lastUpdate: serverTimestamp()
+        });
+    } catch (error) {
+        showFirebaseError("Error guardando ubicación");
+        console.error("Firebase error:", error);
+    }
+}
+
+function setupRealTimeUpdates() {
+    const q = query(
+        collection(db, 'activeUsers'),
+        where('lastUpdate', '>', new Date(Date.now() - 5 * 60 * 1000))
+    );
     
-    cities.slice(0, count).forEach(city => {
-        fetch(`https://nominatim.openstreetmap.org/search?city=${city}&format=json`)
-            .then(res => res.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                    const location = data[0];
-                    createUserMarker(
-                        parseFloat(location.lat),
-                        parseFloat(location.lon),
-                        city,
-                        false
-                    );
+    const unsubscribe = onSnapshot(q, {
+        next: (snapshot) => {
+            // Limpiar marcadores antiguos (excepto el actual)
+            userMarkers.forEach(marker => {
+                if (!marker.isCurrentUser) {
+                    globe.remove(marker.marker3D);
+                    if (marker.label && marker.label.parentNode) {
+                        marker.label.parentNode.removeChild(marker.label);
+                    }
+                    if (marker.marker2D && marker.marker2D.parentNode) {
+                        marker.marker2D.parentNode.removeChild(marker.marker2D);
+                    }
                 }
-            })
-            .catch(err => console.error(`Error obteniendo ${city}:`, err));
+            });
+
+            // Filtrar solo el usuario actual
+            userMarkers = userMarkers.filter(m => m.isCurrentUser);
+
+            // Añadir nuevos usuarios
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (doc.id !== userId) {
+                    createUserMarker(data.lat, data.lng, data.name, false);
+                }
+            });
+
+            // Actualizar contador
+            activeVisitors = snapshot.size;
+            updateDateTimeDisplay();
+        },
+        error: (error) => {
+            showFirebaseError("Error en conexión en tiempo real");
+            console.error("Firebase error:", error);
+        }
     });
+
+    return unsubscribe;
+}
+
+async function updateGlobalCounter() {
+    try {
+        const counterName = "globo_interactivo_visits_v2";
+        await fetch(`https://api.countapi.xyz/hit/${counterName}/total`);
+        const response = await fetch(`https://api.countapi.xyz/get/${counterName}/total`);
+        const data = await response.json();
+        activeVisitors = Math.max(data.value || 1, 1);
+    } catch (error) {
+        console.error("CountAPI error:", error);
+        // Usamos Firestore como respaldo
+        const q = query(collection(db, 'activeUsers'));
+        const querySnapshot = await getDocs(q);
+        activeVisitors = Math.max(querySnapshot.size || 1, 1);
+    }
+}
+
+async function fetchUserLocation() {
+    try {
+        // Obtener ubicación del usuario
+        const ipResponse = await fetch("https://ipapi.co/json/");
+        if (!ipResponse.ok) throw new Error("Error en IPAPI");
+        const data = await ipResponse.json();
+
+        const normalizeText = (text) => text ? text.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : "";
+        userLocationName = [
+            normalizeText(data.city),
+            normalizeText(data.region),
+            normalizeText(data.country_name)
+        ].filter(Boolean).join(", ");
+
+        userLat = data.latitude;
+        userLng = data.longitude;
+
+        // Crear marcador
+        createUserMarker(userLat, userLng, userLocationName, true);
+        
+        // Guardar en Firebase y configurar actualizaciones
+        await saveUserLocation(userLat, userLng, userLocationName);
+        setupRealTimeUpdates();
+        await updateGlobalCounter();
+
+    } catch (error) {
+        console.error("Location error:", error);
+        createUserMarker(0, 0, "Ubicación no disponible", true);
+    }
 }
 
 function updateDateTimeDisplay() {
@@ -339,12 +417,6 @@ function updateDateTimeDisplay() {
     
     document.getElementById("datario").textContent = 
         `Hora: ${hour}:${minute}:${second} - Fecha: ${day}/${month}/${year} - Visitantes: ${activeVisitors}`;
-}
-
-function updateVisitorCount() {
-    // Usamos el contador local como base y sumamos los marcadores simulados
-    activeVisitors = visitCount + userMarkers.filter(m => !m.isCurrentUser).length;
-    updateDateTimeDisplay();
 }
 
 // Animación principal
@@ -372,13 +444,11 @@ function animateGlobe() {
 }
 
 // Inicialización
-function init() {
+async function init() {
     window.addEventListener("resize", updateMarkerPositions);
-    fetchUserLocation();
+    await fetchUserLocation();
     setInterval(updateDateTimeDisplay, 1000);
-    setInterval(updateVisitorCount, 5000);
     animateGlobe();
 }
 
-// Iniciar la aplicación cuando se cargue el DOM
 document.addEventListener('DOMContentLoaded', init);
