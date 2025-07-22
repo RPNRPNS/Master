@@ -164,3 +164,21 @@ body.dark-mode #map-container {
     filter: invert(100%) hue-rotate(180deg) brightness(0.8) contrast(1.2);
     transition: filter 0.5s ease;
 }
+
+.other-user-label {
+    color: #00a8ff !important;
+}
+
+.firebase-error {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff5555;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 100000;
+    text-align: center;
+    max-width: 80%;
+}
