@@ -3,7 +3,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyBsBSSXjsK-EbdQGOsAycobtXNcMOAou9o",
     authDomain: "globo-2527e.firebaseapp.com",
     projectId: "globo-2527e",
-    storageBucket: "globo-2527e.firebasestorage.app",
+    storageBucket: "globo-2527e.appspot.com",
     messagingSenderId: "1042384350668",
     appId: "1:1042384350668:web:6f78aca0b6799f53328169",
     measurementId: "G-293KTDMDQ1"
@@ -87,9 +87,10 @@ function setupEventListeners() {
                 y: currentY - previousMousePosition.y
             };
 
-            globe.rotation.y += deltaMove.x * 0.01;
+            // Corrección del giro invertido (cambiamos el signo de deltaMove.x)
+            globe.rotation.y -= deltaMove.x * 0.01;
             globe.rotation.x += deltaMove.y * 0.01;
-            rotationMomentum = deltaMove.x * 0.0005;
+            rotationMomentum = -deltaMove.x * 0.0005;
             previousMousePosition = { x: currentX, y: currentY };
         }
     });
@@ -330,9 +331,9 @@ function animate() {
         // Zoom suave
         camera.position.z += (targetZoom - camera.position.z) * 0.1;
         
-        // Rotación automática
+        // Rotación automática (corregida para dirección consistente)
         if (isRotating && !isDragging) {
-            globe.rotation.y += rotationMomentum || 0.005;
+            globe.rotation.y -= rotationMomentum || 0.005;  // Cambiado de += a -=
             if (rotationMomentum) rotationMomentum *= 0.95;
         }
         
