@@ -87,7 +87,7 @@ function setupEventListeners() {
                 y: currentY - previousMousePosition.y
             };
 
-            // Corrección del giro invertido (cambiamos el signo de deltaMove.x)
+            // Corrección del giro invertido
             globe.rotation.y -= deltaMove.x * 0.01;
             globe.rotation.x += deltaMove.y * 0.01;
             rotationMomentum = -deltaMove.x * 0.0005;
@@ -253,7 +253,7 @@ async function saveUserLocation(lat, lng, name) {
 
 function setupRealTimeUpdates() {
     db.collection('activeUsers')
-        .where('lastUpdate', '>', new Date(Date.now() - 5 * 60 * 1000))
+        .where('lastUpdate', '>', new Date(Date.now() - 20 * 1000)) // 20 segundos para otros usuarios
         .onSnapshot(snapshot => {
             // Limpiar marcadores antiguos
             userMarkers = userMarkers.filter(marker => {
@@ -331,9 +331,9 @@ function animate() {
         // Zoom suave
         camera.position.z += (targetZoom - camera.position.z) * 0.1;
         
-        // Rotación automática (corregida para dirección consistente)
+        // Rotación automática
         if (isRotating && !isDragging) {
-            globe.rotation.y -= rotationMomentum || 0.005;  // Cambiado de += a -=
+            globe.rotation.y -= rotationMomentum || 0.005;
             if (rotationMomentum) rotationMomentum *= 0.95;
         }
         
@@ -347,6 +347,12 @@ async function init() {
     window.addEventListener("resize", updateMarkerPositions);
     await fetchUserLocation();
     setInterval(updateDateTimeDisplay, 1000);
+    // Actualizar mi ubicación cada 30 segundos
+    setInterval(() => {
+        if (userLat !== 0 && userLng !== 0) {
+            saveUserLocation(userLat, userLng, userLocationName);
+        }
+    }, 30000);
     animate();
 }
 
