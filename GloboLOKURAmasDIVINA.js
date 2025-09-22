@@ -1,13 +1,13 @@
-
 const firebaseConfig = {
-    apiKey: "AIzaSyBsBSSXjsK-EbdQGOsAycobtXNcMOAou9o",
-    authDomain: "globo-2527e.firebaseapp.com",
-    projectId: "globo-2527e",
-    storageBucket: "globo-2527e.appspot.com",
-    messagingSenderId: "1042384350668",
-    appId: "1:1042384350668:web:6f78aca0b6799f53328169",
-    measurementId: "G-293KTDMDQ1"
+  apiKey: "AIzaSyDCgg-ozrjXbFfhqfcgJVBOqdSBPMVLcjA",
+  authDomain: "globo-cde05.firebaseapp.com",
+  projectId: "globo-cde05",
+  storageBucket: "globo-cde05.firebasestorage.app",
+  messagingSenderId: "396227154111",
+  appId: "1:396227154111:web:9b13d0afb080679ea1360a",
+  measurementId: "G-J07W2MSKTC"
 };
+
 
 
 try {
@@ -357,3 +357,4 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
