@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
   apiKey: "AIzaSyC6PYl8dojCK0_mU9DsrUt4JCp1vznHVbk",
   authDomain: "globolokuramasdivina2.firebaseapp.com",
@@ -86,10 +85,10 @@ function setupEventListeners() {
                 y: currentY - previousMousePosition.y
             };
 
-           
-            globe.rotation.y -= deltaMove.x * 0.01;
+            // GIRO CORREGIDO - DIRECCIÓN INVERTIDA
+            globe.rotation.y += deltaMove.x * 0.01;  // Cambiado de -= a +
             globe.rotation.x += deltaMove.y * 0.01;
-            rotationMomentum = -deltaMove.x * 0.0005;
+            rotationMomentum = deltaMove.x * 0.0005;  // Cambiado de negativo a positivo
             previousMousePosition = { x: currentX, y: currentY };
         }
     });
@@ -250,11 +249,38 @@ async function saveUserLocation(lat, lng, name) {
     }
 }
 
+async function updateGlobalCounter() {
+    try {
+        const counterRef = db.collection('counters').doc('global_visits');
+        
+        // Usar transacción para incrementar atómicamente
+        await db.runTransaction(async (transaction) => {
+            const doc = await transaction.get(counterRef);
+            const currentCount = doc.exists ? doc.data().count : 0;
+            transaction.set(counterRef, { 
+                count: currentCount + 1,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        });
+        
+        // Obtener el contador actualizado
+        const doc = await counterRef.get();
+        if (doc.exists) {
+            activeVisitors = Math.max(doc.data().count, activeVisitors);
+        }
+    } catch (error) {
+        console.error("Error en contador Firebase:", error);
+        // Fallback: usar timestamp como contador aproximado
+        activeVisitors = Math.max(activeVisitors, 1);
+    }
+}
+
 function setupRealTimeUpdates() {
+    // Escuchar cambios en usuarios activos
     db.collection('activeUsers')
-        .where('lastUpdate', '>', new Date(Date.now() - 20 * 1000)) 
+        .where('lastUpdate', '>', new Date(Date.now() - 20 * 1000))
         .onSnapshot(snapshot => {
-            
+            // Limpiar marcadores de otros usuarios
             userMarkers = userMarkers.filter(marker => {
                 if (marker.isCurrentUser) return true;
                 globe.remove(marker.marker3D);
@@ -263,7 +289,7 @@ function setupRealTimeUpdates() {
                 return false;
             });
 
-            
+            // Agregar nuevos marcadores
             snapshot.forEach(doc => {
                 const data = doc.data();
                 if (doc.id !== userId) {
@@ -271,7 +297,7 @@ function setupRealTimeUpdates() {
                 }
             });
 
-            
+            // Actualizar contador de visitantes activos
             activeVisitors = snapshot.size;
             updateDateTimeDisplay();
             if (!is3DView) updateMapMarkers();
@@ -279,18 +305,19 @@ function setupRealTimeUpdates() {
             showError("Error en tiempo real");
             console.error(error);
         });
-}
 
-async function updateGlobalCounter() {
-    try {
-        const counterName = "globo_interactivo_visits";
-        await fetch(`https://api.countapi.xyz/hit/${counterName}/total`);
-        const response = await fetch(`https://api.countapi.xyz/get/${counterName}/total`);
-        const data = await response.json();
-        activeVisitors = Math.max(data.value, activeVisitors);
-    } catch (error) {
-        console.error("Error en contador:", error);
-    }
+    // Escuchar cambios en el contador global
+    db.collection('counters').doc('global_visits')
+        .onSnapshot(doc => {
+            if (doc.exists) {
+                const globalCount = doc.data().count;
+                // Usar el máximo entre visitantes activos y contador global
+                activeVisitors = Math.max(activeVisitors, globalCount);
+                updateDateTimeDisplay();
+            }
+        }, error => {
+            console.error("Error escuchando contador global:", error);
+        });
 }
 
 async function fetchUserLocation() {
@@ -330,9 +357,9 @@ function animate() {
         
         camera.position.z += (targetZoom - camera.position.z) * 0.1;
         
-        
+        // ROTACIÓN AUTOMÁTICA CORREGIDA
         if (isRotating && !isDragging) {
-            globe.rotation.y -= rotationMomentum || 0.005;
+            globe.rotation.y += rotationMomentum || 0.005;  // Cambiado de -= a +
             if (rotationMomentum) rotationMomentum *= 0.95;
         }
         
