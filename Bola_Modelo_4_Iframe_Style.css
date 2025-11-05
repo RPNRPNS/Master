@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    /* TODO SE MODIFICA AQUÍ ↓ */
+    width: 410px;       /* Cambiar tamaño horizontal */
+    height: 390px;      /* Cambiar tamaño vertical */
+    margin-top: 0px;    /* Mover arriba/abajo */
+    margin-left: 0px;   /* Mover izquierda/derecha */
+}
+
+.player {
+    width: 100%;
+    height: 100%;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}

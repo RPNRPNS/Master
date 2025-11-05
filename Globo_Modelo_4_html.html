@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Globo Terrestre Interactivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="1_leaflet.css" />
+    <link rel="stylesheet" href="Globo_Modelo_4_css.css">
+    <link rel="stylesheet" href="Globo_Modelo_4_cursor_styles_css.css">
+    <script src="2_firebase-app-compat.js"></script>
+    <script src="3_firebase-firestore-compat.js"></script>
+    <style>
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div>Cargando Globo Interactivo...</div>
+    </div>
+    
+    <div id="datario">
+        <span class="time-info">Hora: --:--:--</span> | 
+        <span class="date-info">Fecha: --/--/----</span> | 
+        <span class="counter-active">Activos: 0</span>
+    </div>
+    
+    <div id="copyright-area">
+        <span>© 2025</span>
+        <a href="https://xat.com/RADIOPERLANEGRA" target="_blank">
+            <img src="https://i.imgur.com/981Zxp6.png" alt="Logo" />
+        </a>
+    </div>
+
+    <div id="controls-container">
+        <div id="controls">
+            <button id="toggleRotation" class="control-btn">⏸️ Pausar</button>
+            <button id="toggleDarkMode" class="control-btn">🌙 Oscuro</button>
+            <button id="toggleView" class="control-btn">🗺️ Mapa</button>
+            <button id="toggleListView" class="control-btn">📋 Lista</button>
+        </div>
+    </div>
+
+    <div id="globe-container"></div>
+    <div id="map-container"></div>
+    
+    <!-- CONTENEDOR PARA LA LISTA -->
+    <div id="list-container">
+        <div id="list-header">
+            <h3>📍 Lista de Ubicaciones</h3>
+            <div id="list-stats">Total: 0 ubicaciones - 0 personas</div>
+        </div>
+        <div id="locations-list">
+            <div class="empty-state">Cargando ubicaciones...</div>
+        </div>
+    </div>
+
+    <script src="4_three.min.js"></script>
+    <script src="5_leaflet.js"></script>
+    <script src="Globo_Modelo_4_js.js"></script>
+    <script src="Bola_Modelo_4_cursor_manager_js.js"></script>
+    <script src="Globo_Modelo_4_map_navigation_js.js"></script>
+</body>
+</html>
