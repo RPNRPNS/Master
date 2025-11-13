@@ -1,11 +1,11 @@
 const firebaseConfig = {
-  apiKey: "AIzaSyDmTiUq_qu-q0rnzpJj0onEDffq4kojAlc",
-  authDomain: "globoradioperla.firebaseapp.com",
-  projectId: "globoradioperla",
-  storageBucket: "globoradioperla.firebasestorage.app",
-  messagingSenderId: "269857063127",
-  appId: "1:269857063127:web:6d83e10234953d93c7b092",
-  measurementId: "G-TF0PBZBDNN"
+  apiKey: "AIzaSyC6PYl8dojCK0_mU9DsrUt4JCp1vznHVbk",
+  authDomain: "globolokuramasdivina2.firebaseapp.com",
+  projectId: "globolokuramasdivina2",
+  storageBucket: "globolokuramasdivina2.firebasestorage.app",
+  messagingSenderId: "618119456785",
+  appId: "1:618119456785:web:936a9a730c14e5ef7b69b0",
+  measurementId: "G-XRC8HFTHH4"
 };
 
 // Inicializar Firebase
@@ -668,5 +668,6 @@ async function init() {
         }
     }, 2000);
 }
+
 
 document.addEventListener('DOMContentLoaded', init);
