@@ -540,9 +540,10 @@ document.write("" + textosemana[diasemana] + " " + diames + " de " + textomes[me
 
 })(jQuery);
     $("#stream1").icast({
-	    URL: "https://radio.technoplayer2radioserver.org:8040",
+	    URL: "https://radio.technoplayerserver.com:8040",
 		version: "2",
        })
        
 	
+
 
